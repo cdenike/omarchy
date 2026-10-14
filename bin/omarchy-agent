@@ -23,13 +23,7 @@ while (($#)); do
       prompt=${2:?--prompt needs a value}
       shift 2
       ;;
-    qwen)
-  # A bare positional prompt is one-shot here, so seeding a session that stays
-  # open is --prompt-interactive; -p is deprecated upstream.
-  command=(qwen --yolo)
-  [[ -n ${prompt:-} ]] && command+=("--prompt-interactive=$prompt")
-  ;;
-*)
+    *)
       echo "Unexpected argument: $1" >&2
       echo "To pass a prompt: omarchy agent prompt \"$*\"" >&2
       exit 1
@@ -143,6 +137,11 @@ kimi)
   else
     command=(kimi --yolo)
   fi
+  ;;
+qwen)
+  # Bind the value so prompts starting with a dash remain literal.
+  command=(qwen --yolo)
+  [[ -n ${prompt:-} ]] && command+=("--prompt-interactive=$prompt")
   ;;
 *)
   echo "Unsupported default agent: $agent" >&2
